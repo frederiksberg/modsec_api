@@ -97,5 +97,5 @@ class TokenRefresh(Resource):
 class GetLog(Resource):
     @jwt_required
     def get(self):
-        a = lib.Audit("test.log")
+        a = lib.Audit("/var/log/modsec_audit.log")
         return a.ToDict()
