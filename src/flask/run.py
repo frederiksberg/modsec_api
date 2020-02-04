@@ -34,6 +34,7 @@ def check_if_token_in_bl(decrypted_token):
     jti = decrypted_token["jti"]
     return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
+api.add_resource(resources.ChangePassword, "/changepassword")
 api.add_resource(resources.Register, "/register")
 api.add_resource(resources.Login, "/login")
 api.add_resource(resources.LogoutAccess, "/logoutaccess")

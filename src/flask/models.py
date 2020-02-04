@@ -13,6 +13,9 @@ class UserModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
     @staticmethod
     def generate_hash(password):
         return sha256.hash(password)

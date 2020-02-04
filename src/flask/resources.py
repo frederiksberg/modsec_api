@@ -8,15 +8,21 @@ parser = reqparse.RequestParser()
 parser.add_argument("username", help="This field is required", required=True)
 parser.add_argument("password", help="This field is required", required=True)
 
+def verify_admin(user):
+    if not user:
+        return (True, {"message": "Invalid token"})
+
+    if user.access_level != "ADMIN":
+            return (True, {"message": "Your current user does not have the required priviledges"})
+
+    return (False, None)
+
 class Register(Resource):
     @jwt_required
     def post(self):
         req_user = UserModel.find_by_username(get_jwt_identity())
-        if not req_user:
-            return {"message": "Invalid token"}
-
-        if req_user.access_level != "ADMIN":
-            return {"message": "Your current user does not have the required priviledges"}
+        failed, msg = verify_admin(req_user)
+        if failed: return msg
 
         data = parser.parse_args()
 
@@ -40,6 +46,24 @@ class Register(Resource):
             }
         except:
             return {"message": "An error occured while creating user"}
+
+class ChangePassword(Resource):
+    @jwt_required
+    def post(self):
+        req_user = UserModel.find_by_username(get_jwt_identity())
+        failed, msg = verify_admin(req_user)
+        if failed: return msg
+
+        data = parser.parse_args()
+
+        user = UserModel.find_by_username(data["username"])
+        if not user:
+            return {"message": "User doesn't exist"}
+
+        user.password = UserModel.generate_hash(data["password"])
+        user.update()
+
+        return {"message": f"Succesfully updated password for {data['username']}"}
 
 class Login(Resource):
     def post(self):
