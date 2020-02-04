@@ -138,7 +138,7 @@ class Audit:
                 s[7],
                 datetime.strptime(s[3], DATEFORMAT_IN),
                 s[8],
-                s[25]
+                s[-4]
             )
         except:
             raise ValueError(f"Error while parsing {s}")
