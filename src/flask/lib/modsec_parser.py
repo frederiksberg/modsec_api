@@ -128,17 +128,20 @@ class Audit:
             raise IOError("An error occured while parsing log file!")
 
     def ParseUnit(self, line : str) -> Request:
-        s = line.replace("[", "").replace('"', "").split(" ")
+        try:
+            s = line.replace("[", "").replace('"', "").split(" ")
 
-        return Request(
-            s[6],
-            s[0],
-            s[5],
-            s[7],
-            datetime.strptime(s[3], DATEFORMAT_IN),
-            s[8],
-            s[25]
-        )
+            return Request(
+                s[6],
+                s[0],
+                s[5],
+                s[7],
+                datetime.strptime(s[3], DATEFORMAT_IN),
+                s[8],
+                s[25]
+            )
+        except:
+            raise ValueError(f"Error while parsing {s}")
 
     def ToDict(self) -> Dict:
         return {
